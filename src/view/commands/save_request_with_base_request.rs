@@ -3,8 +3,8 @@ use std::io::{empty, stderr};
 use async_trait::async_trait;
 
 use super::ViewCommand;
-use crate::app::backend::Backend;
-use crate::app::services::request::entities::partial_entities::PartialRequestData;
+use crate::app::kernel::Backend;
+use crate::app::services::http_collections::entities::partial_entities::PartialRequestData;
 use crate::view::input::cli_input::ViewOptions;
 use crate::view::output::utils::BREAK_LINE;
 use crate::view::output::writer::{CliWriterRepository, CrosstermCliWriter};

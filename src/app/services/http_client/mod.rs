@@ -1,4 +1,3 @@
-pub mod commands;
 pub mod entities;
-pub mod facade;
+pub mod http_repository;
 pub mod service;

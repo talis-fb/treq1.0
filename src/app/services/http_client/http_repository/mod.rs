@@ -2,12 +2,13 @@ pub mod reqwest;
 
 use mockall::automock;
 use mockall::predicate::*;
+use tokio::sync::oneshot::Receiver;
 use tokio::task::JoinHandle as TokioTask;
 
 use super::entities::Response;
-use crate::app::services::request::entities::requests::RequestData;
+use crate::app::services::http_collections::entities::requests::RequestData;
 
-pub type TaskRunningRequest = TokioTask<anyhow::Result<Response>>;
+// pub type TaskRunningRequest = TokioTask<anyhow::Result<Response>>;
 
 // -------------------------------------------------------------------------------------------------------------------
 // TODO: Make this 'automock' enabled only in test mode
@@ -17,5 +18,5 @@ pub type TaskRunningRequest = TokioTask<anyhow::Result<Response>>;
 
 #[automock]
 pub trait HttpClientRepository: Send {
-    fn submit_request(&self, request: RequestData) -> TaskRunningRequest;
+    fn submit_request(&self, request: RequestData) -> Receiver<anyhow::Result<Response>>;
 }

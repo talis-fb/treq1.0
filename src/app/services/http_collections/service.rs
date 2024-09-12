@@ -4,9 +4,16 @@ use std::sync::Arc;
 use super::entities::requests::{RequestData, RequestEntity};
 use crate::utils::uuid::UUID;
 
-pub type RequestServiceInstance = Box<dyn RequestServiceFacade>;
+pub trait RequestService: Send + Sync {
+    fn add_request(&mut self, request: RequestData) -> UUID;
+    fn edit_request(&mut self, id: UUID, request: RequestData);
+    fn delete_request(&mut self, id: UUID);
+    fn get_request_data(&self, id: UUID) -> Option<Arc<RequestData>>;
+    fn undo_request_data(&mut self, id: UUID);
+    fn redo_request_data(&mut self, id: UUID);
+}
 
-pub struct RequestService {
+pub struct CoreRequestService {
     // Possible ways to store reference to another service...
     // other_service: &'a OtherService
     // other_service: Sender<Command<ServiceB>> # Command Channel
@@ -14,7 +21,7 @@ pub struct RequestService {
     requests: HashMap<UUID, RequestEntity>,
 }
 
-impl RequestService {
+impl CoreRequestService {
     pub fn init() -> Self {
         Self {
             requests: HashMap::default(),
@@ -25,9 +32,8 @@ impl RequestService {
 // --------------
 // Impl facade
 // --------------
-use super::facade::RequestServiceFacade;
 
-impl RequestServiceFacade for RequestService {
+impl RequestService for CoreRequestService {
     fn add_request(&mut self, request_data: RequestData) -> UUID {
         let new_request = RequestEntity::from(request_data);
         let id = UUID::new_random();

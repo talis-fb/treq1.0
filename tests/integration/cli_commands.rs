@@ -1,7 +1,7 @@
-use treq::app::services::request::entities::methods::METHODS;
-use treq::app::services::request::entities::partial_entities::PartialRequestData;
-use treq::app::services::request::entities::requests::{BodyPayload, RequestData};
-use treq::app::services::request::entities::url::Url;
+use treq::app::services::http_collections::entities::methods::METHODS;
+use treq::app::services::http_collections::entities::partial_entities::PartialRequestData;
+use treq::app::services::http_collections::entities::requests::{BodyPayload, RequestData};
+use treq::app::services::http_collections::entities::url::Url;
 use treq::view::commands::{self, ViewCommand};
 
 use crate::mocks::repositories::{create_mock_back_end, CliWriterUseLess};

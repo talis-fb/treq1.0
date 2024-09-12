@@ -1,6 +1,6 @@
 use anyhow::Result;
 
-use crate::app::services::request::entities::methods::METHODS;
+use crate::app::services::http_collections::entities::methods::METHODS;
 use crate::utils::regexes;
 use crate::view::input::cli_input::{CliCommandChoice, CliInput};
 

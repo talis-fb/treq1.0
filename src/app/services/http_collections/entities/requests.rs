@@ -7,7 +7,7 @@ use serde_json::Value;
 
 use super::partial_entities::PartialRequestData;
 use super::url::{Url, UrlInfo};
-use crate::app::services::request::entities::methods::METHODS;
+use crate::app::services::http_collections::entities::methods::METHODS;
 
 #[derive(Default, Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RequestData {

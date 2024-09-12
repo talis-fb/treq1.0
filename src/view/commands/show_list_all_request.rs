@@ -3,7 +3,7 @@ use std::io::stdout;
 use async_trait::async_trait;
 
 use super::ViewCommand;
-use crate::app::backend::Backend;
+use crate::app::kernel::Backend;
 use crate::view::output::utils::{BREAK_LINE, TAB_SPACE};
 use crate::view::output::writer::{CliWriterRepository, CrosstermCliWriter};
 use crate::view::style::{Color, StyledStr};

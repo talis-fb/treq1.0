@@ -1,4 +1,4 @@
-pub mod backend;
-pub mod service_commands;
-pub mod service_runner;
+pub mod kernel;
 pub mod services;
+pub mod commands;
+pub mod configurations;

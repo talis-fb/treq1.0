@@ -3,17 +3,18 @@ use std::str::FromStr;
 
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use reqwest::Client;
+use tokio::sync::oneshot::Receiver;
 
 use super::super::entities::{Response, ResponseStage};
-use super::{HttpClientRepository, TaskRunningRequest};
-use crate::app::services::request::entities::methods::METHODS;
-use crate::app::services::request::entities::requests::RequestData;
+use super::HttpClientRepository;
+use crate::app::services::http_collections::entities::methods::METHODS;
+use crate::app::services::http_collections::entities::requests::RequestData;
 
 #[derive(Default)]
 pub struct ReqwestClientRepository;
 
 impl HttpClientRepository for ReqwestClientRepository {
-    fn submit_request(&self, request: RequestData) -> TaskRunningRequest {
+    fn submit_request(&self, request: RequestData) -> Receiver<anyhow::Result<Response>> {
         tokio::task::spawn(async move {
             let url = request.url.to_string();
             let headers = request.headers;

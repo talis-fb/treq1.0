@@ -1,10 +1,10 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use tokio::io::AsyncWriteExt;
 
-pub async fn read_from_file(path: PathBuf) -> Result<String> {
-    Ok(tokio::fs::read_to_string(&path).await?)
+pub async fn read_from_file(path: impl AsRef<Path>) -> Result<String> {
+    Ok(tokio::fs::read_to_string(path.as_ref()).await?)
 }
 
 pub async fn write_to_file(path: PathBuf, content: &str) -> Result<()> {
