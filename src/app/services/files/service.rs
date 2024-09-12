@@ -16,7 +16,6 @@ pub trait FileService: Send + Sync {
     fn rename_temp_file(&self, from: String, to: String) -> Result<()>;
 }
 
-
 pub struct CoreFileService {
     config_root_path: PathBuf,
     data_app_root_path: PathBuf,
@@ -111,4 +110,3 @@ impl FileService for CoreFileService {
         self.rename_file(from_file_path, to_file_path)
     }
 }
-

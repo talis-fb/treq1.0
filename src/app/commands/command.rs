@@ -4,7 +4,6 @@ pub trait Command {
     fn execute(self, input: Self::Input) -> Self::Output;
 }
 
-
 pub trait AsyncCommand {
     type Input;
     type Output;

@@ -5,8 +5,8 @@ use indicatif::{ProgressBar, ProgressStyle};
 
 use super::ViewCommand;
 use crate::app::kernel::Backend;
-use crate::app::services::http_collections::entities::requests::RequestData;
 use crate::app::services::http_client::entities::get_status_code_message;
+use crate::app::services::http_collections::entities::requests::RequestData;
 use crate::utils::channels::chain_listener_to_receiver;
 use crate::view::input::cli_input::ViewOptions;
 use crate::view::output::utils::{BREAK_LINE, BREAK_LINE_WITH_GAP, SINGLE_SPACE, TAB_SPACE};

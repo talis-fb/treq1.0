@@ -268,7 +268,7 @@ pub mod tests_parsers_request_items {
 
         for case in cases {
             let base_request = PartialRequestData::default();
-            let output = operators::non_string_body_value(case, &base_request); 
+            let output = operators::non_string_body_value(case, &base_request);
             assert!(matches!(output, Some(Err(_))));
         }
     }

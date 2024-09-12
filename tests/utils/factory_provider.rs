@@ -1,9 +1,9 @@
 use treq::app::kernel::AppBackend;
 use treq::app::services::files::service::FileService;
-use treq::app::services::http_collections::service::RequestService;
 use treq::app::services::http_client::http_repository::reqwest::ReqwestClientRepository;
 use treq::app::services::http_client::http_repository::HttpClientRepository;
 use treq::app::services::http_client::service::WebClient;
+use treq::app::services::http_collections::service::RequestService;
 
 pub async fn create_default_provider() -> AppBackend {
     let req = RequestService::init();

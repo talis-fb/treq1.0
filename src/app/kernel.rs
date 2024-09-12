@@ -4,22 +4,13 @@ use std::sync::Arc;
 
 use anyhow::{Error, Result};
 use async_trait::async_trait;
-use tokio::sync::oneshot;
-use tokio::sync::Mutex;
-use tokio::sync::RwLock;
-use tokio::sync::RwLockWriteGuard;
+use tokio::sync::{oneshot, Mutex, RwLock, RwLockWriteGuard};
 
-use crate::app::services::files::service::FileService;
-use crate::app::services::files::service::CoreFileService;
-
-use crate::app::services::http_client::service::WebClient;
-use crate::app::services::http_client::service::CoreWebClient;
+use crate::app::services::files::service::{CoreFileService, FileService};
 use crate::app::services::http_client::entities::Response;
-
-use crate::app::services::http_collections::service::RequestService;
-use crate::app::services::http_collections::service::CoreRequestService;
+use crate::app::services::http_client::service::{CoreWebClient, WebClient};
 use crate::app::services::http_collections::entities::requests::RequestData;
-
+use crate::app::services::http_collections::service::{CoreRequestService, RequestService};
 use crate::utils::files as file_utils;
 use crate::utils::uuid::UUID;
 
@@ -47,7 +38,6 @@ pub trait Backend: Send + Sync {
     async fn rename_request_saved(&mut self, request_name: String, new_name: String) -> Result<()>;
 }
 
-
 pub struct AppBackend {
     request_service: Arc<RwLock<Box<dyn RequestService>>>,
     web_client: Arc<RwLock<Box<dyn WebClient>>>,
@@ -60,7 +50,9 @@ impl AppBackend {
         web_client: impl WebClient + 'static,
         file_service: impl FileService + 'static,
     ) -> Self {
-        let request_service = Arc::new(RwLock::new(Box::new(request_service) as Box<dyn RequestService>));
+        let request_service = Arc::new(RwLock::new(
+            Box::new(request_service) as Box<dyn RequestService>
+        ));
         let web_client = Arc::new(RwLock::new(Box::new(web_client) as Box<dyn WebClient>));
         let file_service = Arc::new(RwLock::new(Box::new(file_service) as Box<dyn FileService>));
         Self {
@@ -110,13 +102,18 @@ impl Backend for AppBackend {
         // )
         // .await?;
         // Ok(resp.unwrap())
-        
+
         let request_data = self
             .get_request(id)
             .await?
             .ok_or(Error::msg("Not found request to given ID"))?;
 
-        let resp = self.web_client.write().await.submit_request((*request_data).clone()).await?;
+        let resp = self
+            .web_client
+            .write()
+            .await
+            .submit_request((*request_data).clone())
+            .await?;
         resp
     }
 
@@ -125,7 +122,12 @@ impl Backend for AppBackend {
         name: String,
         request_data: RequestData,
     ) -> Result<()> {
-        let path = self.file_service.write().await.get_or_create_data_file(name).await?;
+        let path = self
+            .file_service
+            .write()
+            .await
+            .get_or_create_data_file(name)
+            .await?;
 
         let request_data = serde_json::to_string(&request_data)?;
         file_utils::write_to_file(path, &request_data).await?;
