@@ -57,7 +57,7 @@ where
 {
     pub fn as_ref(&self) -> &T {
         let lock_guard = self.lock_guard.borrow();
-        &*lock_guard
+        lock_guard
     }
 }
 
@@ -76,7 +76,7 @@ where
 {
     pub fn as_ref(&self) -> &T {
         let lock_guard = self.lock_guard.borrow();
-        &*lock_guard
+        lock_guard
     }
 
     pub fn as_mut(&mut self) -> &mut T {

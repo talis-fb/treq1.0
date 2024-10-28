@@ -12,6 +12,12 @@ pub struct ShowListAllRequestExecutor<Writer: CliWriterRepository> {
     pub writer: Writer,
 }
 
+impl Default for ShowListAllRequestExecutor<CrosstermCliWriter> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ShowListAllRequestExecutor<CrosstermCliWriter> {
     pub fn new() -> Self {
         ShowListAllRequestExecutor {

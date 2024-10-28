@@ -1,5 +1,4 @@
 use tokio::sync::oneshot::Receiver;
-use tokio::task::JoinHandle;
 
 use super::entities::Response;
 use super::http_repository::HttpClientRepository;

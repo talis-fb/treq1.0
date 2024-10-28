@@ -171,7 +171,7 @@ mod parsers_request_items {
     pub mod utils {
         use super::*;
 
-        pub fn extract_nested_body_keys<'a>(s: &'a str) -> Vec<&'a str> {
+        pub fn extract_nested_body_keys(s: &str) -> Vec<&str> {
             let keys: Option<Vec<&str>> = (|| {
                 let re = regexes::request_items::nested_body_keys();
                 let matcher = re.captures(s)?;
@@ -188,7 +188,7 @@ mod parsers_request_items {
                 Some(
                     Vec::from([root_key])
                         .into_iter()
-                        .chain(sub_keys.into_iter())
+                        .chain(sub_keys)
                         .collect::<Vec<_>>(),
                 )
             })();
@@ -196,7 +196,7 @@ mod parsers_request_items {
             keys.unwrap_or(Vec::from([s]))
         }
 
-        pub fn parse_non_string_value_from_str_input<'a>(input_value: &'a str) -> Option<Value> {
+        pub fn parse_non_string_value_from_str_input(input_value: &str) -> Option<Value> {
             serde_json::from_str::<Value>(input_value)
                 .ok()
                 .and_then(|v| match v {

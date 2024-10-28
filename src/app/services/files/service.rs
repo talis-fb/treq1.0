@@ -33,7 +33,7 @@ impl FileService for CoreFileService {
                 std::fs::create_dir_all(parent)?;
             }
 
-            std::fs::File::create(&path)?;
+            std::fs::File::create(path)?;
         }
         Ok(path.clone())
     }
@@ -49,7 +49,7 @@ impl FileService for CoreFileService {
             .write(true)
             .create(true)
             .truncate(true)
-            .open(&path)?;
+            .open(path)?;
 
         file.sync_all()?;
 

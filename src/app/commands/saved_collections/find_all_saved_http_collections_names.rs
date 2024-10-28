@@ -1,7 +1,5 @@
-use std::borrow::Borrow;
 use std::sync::Arc;
 
-use anyhow::Error;
 
 use crate::app::configurations::collections::USER_COLLECTIONS_FOLDER;
 use crate::app::services::files::service::FileService;

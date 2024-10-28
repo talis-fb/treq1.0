@@ -1,10 +1,10 @@
 use anyhow::Error;
 use directories::ProjectDirs;
 use treq::app::kernel::AppBackend;
-use treq::app::services::files::service::{CoreFileService, FileService};
+use treq::app::services::files::service::CoreFileService;
 use treq::app::services::http_client::http_repository::reqwest::ReqwestClientRepository;
-use treq::app::services::http_client::service::{CoreWebClient, WebClient};
-use treq::app::services::http_collections::service::{CoreRequestService, RequestService};
+use treq::app::services::http_client::service::CoreWebClient;
+use treq::app::services::http_collections::service::CoreRequestService;
 use treq::utils::errors::print_pretty_error;
 use treq::view::input::cli_definition::root_command;
 use treq::view::input::cli_input::CliInput;

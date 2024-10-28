@@ -19,7 +19,7 @@ pub static USER_COLLECTIONS_FOLDER: LazyLock<PathBuf> = LazyLock::new(|| {
 
     let data_dir = proj_dirs.data_dir().to_path_buf();
 
-    let collections_dir = data_dir.join(COLLECTIONS_FOLDER);
+    
 
-    collections_dir
+    data_dir.join(COLLECTIONS_FOLDER)
 });

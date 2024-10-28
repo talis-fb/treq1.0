@@ -1,12 +1,9 @@
 use std::sync::Arc;
 
-use anyhow::Error;
 
-use crate::app::configurations::collections::{HTTP_COLLECTIONS_FOLDER, USER_COLLECTIONS_FOLDER};
+use crate::app::configurations::collections::USER_COLLECTIONS_FOLDER;
 use crate::app::services::files::service::FileService;
-use crate::app::services::http_collections::entities::requests::RequestData;
 use crate::app::services::service::Service;
-use crate::utils::files;
 
 pub struct RemoveHttpCollection {
     pub file_service: Arc<Service<dyn FileService>>,

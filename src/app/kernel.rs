@@ -1,10 +1,7 @@
-use std::borrow::{Borrow, BorrowMut};
-use std::future::Future;
 use std::sync::Arc;
 
 use anyhow::{Error, Result};
 use async_trait::async_trait;
-use tokio::sync::{oneshot, Mutex, RwLock, RwLockWriteGuard};
 
 use super::commands::find_all_saved_http_collections_names::FindAllSavedHttpCollectionNames;
 use super::commands::get_saved_http_collection::GetSavedHttpCollection;
@@ -13,11 +10,10 @@ use super::commands::rename_saved_http_collection::RenameHttpCollection;
 use super::commands::save_http_collection::SaveHttpCollection;
 use super::services::http_client::service::WebClient;
 use super::services::service::Service;
-use crate::app::services::files::service::{CoreFileService, FileService};
+use crate::app::services::files::service::FileService;
 use crate::app::services::http_client::entities::Response;
 use crate::app::services::http_collections::entities::requests::RequestData;
-use crate::app::services::http_collections::service::{CoreRequestService, RequestService};
-use crate::utils::files as file_utils;
+use crate::app::services::http_collections::service::RequestService;
 use crate::utils::uuid::UUID;
 
 #[async_trait]
