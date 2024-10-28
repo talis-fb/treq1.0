@@ -4,12 +4,12 @@ use async_trait::async_trait;
 
 use super::submit_request::BasicRequestExecutor;
 use super::ViewCommand;
-use crate::core::kernel::Kernel;
-use crate::core::services::http_collections::entities::partial_entities::PartialRequestData;
 use crate::adapters::cli::input::cli_input::ViewOptions;
 use crate::adapters::cli::output::utils::BREAK_LINE;
 use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
 use crate::adapters::cli::style::{Color, StyledStr};
+use crate::core::kernel::Kernel;
+use crate::core::services::http_collections::entities::partial_entities::PartialRequestData;
 
 pub struct SubmitSavedRequestExecutor<W1, W2, W3>
 where

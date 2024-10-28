@@ -1,8 +1,8 @@
 use anyhow::Result;
 
+use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput};
 use crate::core::services::http_collections::entities::methods::METHODS;
 use crate::utils::regexes;
-use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput};
 
 pub fn validate_basic_request_without_explicit_method(mut input: CliInput) -> Result<CliInput> {
     if let CliCommandChoice::DefaultBasicRequest { ref url } = input.choice {

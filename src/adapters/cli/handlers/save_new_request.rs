@@ -3,12 +3,12 @@ use std::io::{empty, stderr};
 use async_trait::async_trait;
 
 use super::ViewCommand;
-use crate::core::kernel::Kernel;
-use crate::core::services::http_collections::entities::requests::RequestData;
 use crate::adapters::cli::input::cli_input::ViewOptions;
 use crate::adapters::cli::output::utils::BREAK_LINE;
 use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
 use crate::adapters::cli::style::{Color, StyledStr};
+use crate::core::kernel::Kernel;
+use crate::core::services::http_collections::entities::requests::RequestData;
 
 pub struct SaveNewRequestExecutor<Writer: CliWriterRepository> {
     pub request_name: String,

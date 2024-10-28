@@ -1,14 +1,14 @@
 use anyhow::Error;
 use directories::ProjectDirs;
+use treq::adapters::cli::clap::definitions::root_command_definition;
+use treq::adapters::cli::input::cli_input::CliInput;
+use treq::adapters::cli::input_to_commands::map_input_to_commands;
 use treq::core::kernel::AppKernel;
 use treq::core::services::files::service::CoreFileService;
 use treq::core::services::http_client::http_repository::reqwest::ReqwestClientRepository;
 use treq::core::services::http_client::service::CoreWebClient;
 use treq::core::services::http_collections::service::CoreRequestService;
 use treq::utils::errors::print_pretty_error;
-use treq::adapters::cli::clap::definitions::root_command_definition;
-use treq::adapters::cli::input::cli_input::CliInput;
-use treq::adapters::cli::input_to_commands::map_input_to_commands;
 
 const APP_NAME: &str = env!("CARGO_PKG_NAME");
 const APP_AUTHOR: &str = env!("CARGO_PKG_AUTHORS");

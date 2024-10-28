@@ -1,8 +1,8 @@
+use treq::adapters::cli::handlers::{self, ViewCommand};
 use treq::core::services::http_collections::entities::methods::METHODS;
 use treq::core::services::http_collections::entities::partial_entities::PartialRequestData;
 use treq::core::services::http_collections::entities::requests::{BodyPayload, RequestData};
 use treq::core::services::http_collections::entities::url::Url;
-use treq::adapters::cli::handlers::{self, ViewCommand};
 
 use crate::mocks::repositories::{create_mock_back_end, CliWriterUseLess};
 

@@ -3,10 +3,10 @@ use std::io::stdout;
 use async_trait::async_trait;
 
 use super::ViewCommand;
-use crate::core::kernel::Kernel;
 use crate::adapters::cli::output::utils::BREAK_LINE;
 use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
 use crate::adapters::cli::style::{Color, StyledStr};
+use crate::core::kernel::Kernel;
 
 pub struct InspectRequestExecutor<Writer: CliWriterRepository> {
     pub request_name: String,

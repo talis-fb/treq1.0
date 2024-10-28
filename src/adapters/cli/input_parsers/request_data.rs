@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use anyhow::Result;
 use serde_json::Value;
 
+use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput, RequestBuildingOptions};
 use crate::core::services::http_collections::entities::methods::METHODS;
 use crate::core::services::http_collections::entities::partial_entities::PartialRequestData;
 use crate::core::services::http_collections::entities::requests::BodyPayload;
 use crate::core::services::http_collections::entities::url::{Url, UrlInfo};
-use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput, RequestBuildingOptions};
 
 pub fn parse_inputs_to_request_data(input: &CliInput) -> Result<PartialRequestData> {
     // Optional params like '--url', '--method' or '--raw'

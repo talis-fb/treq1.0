@@ -6,11 +6,11 @@ use dialoguer::theme::ColorfulTheme;
 use dialoguer::Confirm;
 
 use super::ViewCommand;
-use crate::core::kernel::Kernel;
 use crate::adapters::cli::input::cli_input::ViewOptions;
 use crate::adapters::cli::output::utils::BREAK_LINE;
 use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
 use crate::adapters::cli::style::{Color, StyledStr};
+use crate::core::kernel::Kernel;
 
 pub struct RenameRequestExecutor<Writer: CliWriterRepository> {
     pub request_name: String,

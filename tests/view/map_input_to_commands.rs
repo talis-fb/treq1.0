@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 
 use insta::assert_yaml_snapshot as assert_snapshot;
-use treq::adapters::cli::handlers::ViewCommandChoice;
 use treq::adapters::cli::clap::definitions::root_command_definition;
+use treq::adapters::cli::handlers::ViewCommandChoice;
 use treq::adapters::cli::input::cli_input::CliInput;
 use treq::adapters::cli::input_to_commands::map_input_to_commands;
 

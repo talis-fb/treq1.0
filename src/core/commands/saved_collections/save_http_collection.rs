@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-
 use crate::core::configurations::collections::USER_COLLECTIONS_FOLDER;
 use crate::core::services::files::service::FileService;
 use crate::core::services::http_collections::entities::requests::RequestData;

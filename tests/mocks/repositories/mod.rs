@@ -6,6 +6,8 @@ use anyhow::Result;
 use async_trait::async_trait;
 use tempfile::{tempdir, TempDir};
 use tokio::sync::oneshot;
+use treq::adapters::cli::output::writer::CliWriterRepository;
+use treq::adapters::cli::style::StyledStr;
 use treq::core::kernel::{AppKernel, Kernel};
 use treq::core::services::files::service::CoreFileService;
 use treq::core::services::http_client::entities::Response;
@@ -14,8 +16,6 @@ use treq::core::services::http_client::service::CoreWebClient;
 use treq::core::services::http_collections::entities::requests::RequestData;
 use treq::core::services::http_collections::service::CoreRequestService;
 use treq::utils::uuid::UUID;
-use treq::adapters::cli::output::writer::CliWriterRepository;
-use treq::adapters::cli::style::StyledStr;
 
 pub fn create_mock_back_end() -> MockAppBackend {
     let temp_root = tempdir().unwrap();
