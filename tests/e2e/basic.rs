@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use assert_cmd::Command;
 use predicates::prelude::*;
-use treq::app::services::request::entities::url::UrlInfo;
+use treq::app::services::http_collections::entities::url::UrlInfo;
 
 const DEFAULT_HTTPBIN_HOST: &str = "localhost:8888";
 
