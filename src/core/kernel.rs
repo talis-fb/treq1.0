@@ -10,10 +10,10 @@ use super::commands::rename_saved_http_collection::RenameHttpCollection;
 use super::commands::save_http_collection::SaveHttpCollection;
 use super::services::http_client::service::WebClient;
 use super::services::service::Service;
-use crate::app::services::files::service::FileService;
-use crate::app::services::http_client::entities::Response;
-use crate::app::services::http_collections::entities::requests::RequestData;
-use crate::app::services::http_collections::service::RequestService;
+use crate::core::services::files::service::FileService;
+use crate::core::services::http_client::entities::Response;
+use crate::core::services::http_collections::entities::requests::RequestData;
+use crate::core::services::http_collections::service::RequestService;
 use crate::utils::uuid::UUID;
 
 #[async_trait]

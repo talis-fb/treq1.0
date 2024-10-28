@@ -7,8 +7,8 @@ use tokio::sync::oneshot::Receiver;
 
 use super::super::entities::{Response, ResponseStage};
 use super::HttpClientRepository;
-use crate::app::services::http_collections::entities::methods::METHODS;
-use crate::app::services::http_collections::entities::requests::RequestData;
+use crate::core::services::http_collections::entities::methods::METHODS;
+use crate::core::services::http_collections::entities::requests::RequestData;
 
 #[derive(Default)]
 pub struct ReqwestClientRepository;

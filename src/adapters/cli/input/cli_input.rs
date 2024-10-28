@@ -4,7 +4,7 @@ use anyhow::{Error, Result};
 use clap::ArgMatches;
 use serde::Serialize;
 
-use crate::app::services::http_collections::entities::methods::METHODS;
+use crate::core::services::http_collections::entities::methods::METHODS;
 
 pub struct CliInput {
     pub choice: CliCommandChoice,

@@ -3,7 +3,7 @@ use std::io::{empty, stdout};
 use async_trait::async_trait;
 
 use super::ViewCommand;
-use crate::app::kernel::Kernel;
+use crate::core::kernel::Kernel;
 use crate::adapters::cli::input::cli_input::ViewOptions;
 use crate::adapters::cli::output::utils::BREAK_LINE;
 use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};

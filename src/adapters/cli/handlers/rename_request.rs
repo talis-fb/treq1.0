@@ -6,7 +6,7 @@ use dialoguer::theme::ColorfulTheme;
 use dialoguer::Confirm;
 
 use super::ViewCommand;
-use crate::app::kernel::Kernel;
+use crate::core::kernel::Kernel;
 use crate::adapters::cli::input::cli_input::ViewOptions;
 use crate::adapters::cli::output::utils::BREAK_LINE;
 use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};

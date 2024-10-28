@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use crate::app::configurations::collections::USER_COLLECTIONS_FOLDER;
-use crate::app::services::files::service::FileService;
-use crate::app::services::service::Service;
+use crate::core::configurations::collections::USER_COLLECTIONS_FOLDER;
+use crate::core::services::files::service::FileService;
+use crate::core::services::service::Service;
 
 pub struct RenameHttpCollection {
     pub file_service: Arc<Service<dyn FileService>>,

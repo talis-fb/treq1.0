@@ -4,9 +4,9 @@ use async_trait::async_trait;
 use indicatif::{ProgressBar, ProgressStyle};
 
 use super::ViewCommand;
-use crate::app::kernel::Kernel;
-use crate::app::services::http_client::entities::get_status_code_message;
-use crate::app::services::http_collections::entities::requests::RequestData;
+use crate::core::kernel::Kernel;
+use crate::core::services::http_client::entities::get_status_code_message;
+use crate::core::services::http_collections::entities::requests::RequestData;
 use crate::adapters::cli::input::cli_input::ViewOptions;
 use crate::adapters::cli::output::utils::{BREAK_LINE, BREAK_LINE_WITH_GAP, SINGLE_SPACE, TAB_SPACE};
 use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};

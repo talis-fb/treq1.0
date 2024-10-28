@@ -5,7 +5,7 @@ use mockall::predicate::*;
 use tokio::sync::oneshot::Receiver;
 
 use super::entities::Response;
-use crate::app::services::http_collections::entities::requests::RequestData;
+use crate::core::services::http_collections::entities::requests::RequestData;
 
 // -------------------------------------------------------------------------------------------------------------------
 // TODO: Make this 'automock' enabled only in test mode

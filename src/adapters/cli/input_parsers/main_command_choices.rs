@@ -1,6 +1,6 @@
 use anyhow::Result;
 
-use crate::app::services::http_collections::entities::partial_entities::PartialRequestData;
+use crate::core::services::http_collections::entities::partial_entities::PartialRequestData;
 use crate::adapters::cli::handlers::ViewCommandChoice;
 use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput};
 

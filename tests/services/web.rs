@@ -1,7 +1,7 @@
-use treq::app::kernel::Kernel;
-use treq::app::services::http_client::entities::Response;
-use treq::app::services::http_client::http_repository::MockHttpClientRepository;
-use treq::app::services::http_collections::entities::requests::RequestData;
+use treq::core::kernel::Kernel;
+use treq::core::services::http_client::entities::Response;
+use treq::core::services::http_client::http_repository::MockHttpClientRepository;
+use treq::core::services::http_collections::entities::requests::RequestData;
 
 use crate::utils::factory_provider::create_provider_with_mock_web_client;
 

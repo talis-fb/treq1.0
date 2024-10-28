@@ -2,8 +2,8 @@ use tokio::sync::oneshot::Receiver;
 
 use super::entities::Response;
 use super::http_repository::HttpClientRepository;
-use crate::app::services::http_collections::entities::requests::RequestData;
-use crate::app::services::http_collections::entities::url::Url;
+use crate::core::services::http_collections::entities::requests::RequestData;
+use crate::core::services::http_collections::entities::url::Url;
 
 pub trait WebClient: Send + Sync {
     fn submit_request(&mut self, request: RequestData) -> Receiver<anyhow::Result<Response>>;

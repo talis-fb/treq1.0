@@ -2,10 +2,10 @@ use std::sync::Arc;
 
 use anyhow::Error;
 
-use crate::app::configurations::collections::USER_COLLECTIONS_FOLDER;
-use crate::app::services::files::service::FileService;
-use crate::app::services::http_collections::entities::requests::RequestData;
-use crate::app::services::service::Service;
+use crate::core::configurations::collections::USER_COLLECTIONS_FOLDER;
+use crate::core::services::files::service::FileService;
+use crate::core::services::http_collections::entities::requests::RequestData;
+use crate::core::services::service::Service;
 use crate::utils::files;
 
 pub struct GetSavedHttpCollection {

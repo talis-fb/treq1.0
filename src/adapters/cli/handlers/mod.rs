@@ -4,9 +4,9 @@ use async_trait::async_trait;
 use serde::Serialize;
 
 use super::input::cli_input::ViewOptions;
-use crate::app::kernel::Kernel;
-use crate::app::services::http_collections::entities::partial_entities::PartialRequestData;
-use crate::app::services::http_collections::entities::requests::RequestData;
+use crate::core::kernel::Kernel;
+use crate::core::services::http_collections::entities::partial_entities::PartialRequestData;
+use crate::core::services::http_collections::entities::requests::RequestData;
 
 pub mod inspect_request;
 pub mod remove_request;

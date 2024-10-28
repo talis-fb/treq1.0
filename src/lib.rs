@@ -1,3 +1,3 @@
-pub mod app;
+pub mod core;
 pub mod utils;
 pub mod adapters;
