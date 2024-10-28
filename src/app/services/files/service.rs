@@ -38,6 +38,12 @@ impl FileService for CoreFileService {
     }
 
     fn create_or_reset_file(&self, path: &PathBuf) -> Result<PathBuf> {
+        if !path.exists() {
+            if let Some(parent) = path.parent() {
+                std::fs::create_dir_all(parent)?;
+            }
+        }
+
         let file = OpenOptions::new()
             .write(true) 
             .create(true)
