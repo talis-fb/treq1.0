@@ -7,12 +7,12 @@ use async_trait::async_trait;
 use tempfile::{tempdir, TempDir};
 use tokio::sync::oneshot;
 use treq::app::kernel::{AppBackend, Backend};
-use treq::app::services::files::service::FileService;
+use treq::app::services::files::service::{CoreFileService, FileService};
 use treq::app::services::http_client::entities::Response;
 use treq::app::services::http_client::http_repository::reqwest::ReqwestClientRepository;
-use treq::app::services::http_client::service::WebClient;
+use treq::app::services::http_client::service::{CoreWebClient, WebClient};
 use treq::app::services::http_collections::entities::requests::RequestData;
-use treq::app::services::http_collections::service::RequestService;
+use treq::app::services::http_collections::service::{CoreRequestService, RequestService};
 use treq::utils::uuid::UUID;
 use treq::view::output::writer::CliWriterRepository;
 use treq::view::style::StyledStr;
@@ -30,9 +30,9 @@ pub fn create_mock_back_end() -> MockAppBackend {
         .try_for_each(std::fs::create_dir_all)
         .unwrap();
 
-    let req = RequestService::init();
-    let web = WebClient::init(ReqwestClientRepository);
-    let files = FileService::init(config_dir, data_dir, tempfiles_dir);
+    let req = CoreRequestService::init();
+    let web = CoreWebClient::init(ReqwestClientRepository);
+    let files = CoreFileService; //::init(config_dir, data_dir, tempfiles_dir);
     let backend = AppBackend::init(req, web, files);
     MockAppBackend::new(backend, temp_root)
 }
@@ -63,21 +63,14 @@ impl MockAppBackend {
 
 #[async_trait]
 impl Backend for MockAppBackend {
-    async fn submit_request_blocking(&mut self, _id: UUID) -> Result<Response> {
-        panic!("Not implemented");
-    }
-
     async fn submit_http_request(
         &mut self,
         id: UUID,
-    ) -> Result<oneshot::Receiver<Result<Response>>> {
+    ) -> Result<Response> {
         let request = self.app_backend.get_request(id).await?.unwrap();
         let expected_request = self.expected_requests.remove(0);
         assert_eq!(Arc::new(expected_request), request);
-
-        let (tx, rx) = oneshot::channel();
-        tx.send(Ok(Response::default())).unwrap();
-        Ok(rx)
+        Ok(Response::default())
     }
 
     async fn add_request(&mut self, request: RequestData) -> Result<UUID> {

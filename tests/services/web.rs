@@ -14,16 +14,23 @@ async fn test_basic_call_get() {
         resp
     }
 
+    fn expected_response_channel() -> tokio::sync::oneshot::Receiver<anyhow::Result<Response>> {
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        tx.send(Ok(expected_response())).unwrap();
+        rx
+    }
+
+
     let mut mock_client = MockHttpClientRepository::new();
     mock_client
         .expect_submit_request()
         .times(1)
-        .returning(move |_| tokio::task::spawn(async { Ok(expected_response()) }));
+        .returning(move |_| expected_response_channel() );
 
     let mut provider = create_provider_with_mock_web_client(mock_client).await;
     let id_req = provider.add_request(RequestData::default()).await.unwrap();
 
-    let response_submit = provider.submit_request_blocking(id_req).await.unwrap();
+    let response_submit = provider.submit_http_request(id_req).await.unwrap();
 
     assert_eq!(response_submit, expected_response());
 }

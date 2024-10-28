@@ -1,10 +1,10 @@
 use anyhow::Error;
 use directories::ProjectDirs;
 use treq::app::kernel::AppBackend;
-use treq::app::services::files::service::FileService;
+use treq::app::services::files::service::{CoreFileService, FileService};
 use treq::app::services::http_client::http_repository::reqwest::ReqwestClientRepository;
-use treq::app::services::http_client::service::WebClient;
-use treq::app::services::http_collections::service::RequestService;
+use treq::app::services::http_client::service::{CoreWebClient, WebClient};
+use treq::app::services::http_collections::service::{CoreRequestService, RequestService};
 use treq::utils::errors::print_pretty_error;
 use treq::view::input::cli_definition::root_command;
 use treq::view::input::cli_input::CliInput;
@@ -43,9 +43,9 @@ async fn runner() -> anyhow::Result<()> {
     // ----------------------------
     //  BACKEND
     // ----------------------------
-    let req = RequestService::init();
-    let web = WebClient::init(ReqwestClientRepository);
-    let files = FileService::init(config_dir, data_dir, tempfiles_dir);
+    let req = CoreRequestService::init();
+    let web = CoreWebClient::init(ReqwestClientRepository);
+    let files = CoreFileService; //::init(config_dir, data_dir, tempfiles_dir);
     let mut backend = AppBackend::init(req, web, files);
 
     // ----------------------------
