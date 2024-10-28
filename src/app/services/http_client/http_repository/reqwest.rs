@@ -51,10 +51,10 @@ impl HttpClientRepository for ReqwestClientRepository {
                         response_time_ms,
                     )
                     .await;
-                    tx.send(final_response);
+                    tx.send(final_response).unwrap();
                 }
                 Err(err) => {
-                    tx.send(Err(err.into()));
+                    tx.send(Err(err.into())).unwrap();
                 }
             }
         });
