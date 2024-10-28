@@ -2,7 +2,7 @@ use anyhow::{Error, Result};
 use serde_json::{Map, Value};
 
 use crate::utils::regexes;
-use crate::view::input::cli_input::CliInput;
+use crate::adapters::cli::input::cli_input::CliInput;
 
 pub fn validate_body_values_with_raw(input: CliInput) -> Result<CliInput> {
     if let Some(raw_value) = &input.request_input.raw_body {

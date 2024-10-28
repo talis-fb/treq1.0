@@ -3,12 +3,12 @@ use std::io::{empty, stderr};
 use async_trait::async_trait;
 
 use super::ViewCommand;
-use crate::app::kernel::Backend;
+use crate::app::kernel::Kernel;
 use crate::app::services::http_collections::entities::requests::RequestData;
-use crate::view::input::cli_input::ViewOptions;
-use crate::view::output::utils::BREAK_LINE;
-use crate::view::output::writer::{CliWriterRepository, CrosstermCliWriter};
-use crate::view::style::{Color, StyledStr};
+use crate::adapters::cli::input::cli_input::ViewOptions;
+use crate::adapters::cli::output::utils::BREAK_LINE;
+use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
+use crate::adapters::cli::style::{Color, StyledStr};
 
 pub struct SaveNewRequestExecutor<Writer: CliWriterRepository> {
     pub request_name: String,
@@ -40,7 +40,7 @@ impl SaveNewRequestExecutor<CrosstermCliWriter> {
 
 #[async_trait]
 impl<Writer: CliWriterRepository> ViewCommand for SaveNewRequestExecutor<Writer> {
-    async fn execute(mut self: Box<Self>, provider: &mut dyn Backend) -> anyhow::Result<()> {
+    async fn execute(mut self: Box<Self>, provider: &mut dyn Kernel) -> anyhow::Result<()> {
         self.writer.print_lines([BREAK_LINE]);
         self.writer
             .print_lines_styled([[StyledStr::from(" Saving").with_color_text(Color::Yellow)]]);

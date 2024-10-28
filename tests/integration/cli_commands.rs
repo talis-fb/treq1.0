@@ -2,7 +2,7 @@ use treq::app::services::http_collections::entities::methods::METHODS;
 use treq::app::services::http_collections::entities::partial_entities::PartialRequestData;
 use treq::app::services::http_collections::entities::requests::{BodyPayload, RequestData};
 use treq::app::services::http_collections::entities::url::Url;
-use treq::view::commands::{self, ViewCommand};
+use treq::adapters::cli::handlers::{self, ViewCommand};
 
 use crate::mocks::repositories::{create_mock_back_end, CliWriterUseLess};
 
@@ -13,7 +13,7 @@ async fn should_submit_a_basic_request() -> anyhow::Result<()> {
         .with_method(METHODS::POST)
         .with_headers([("User-Agent".into(), "treq-test".into())]);
 
-    use commands::submit_request::BasicRequestExecutor;
+    use handlers::submit_request::BasicRequestExecutor;
 
     let executor: Box<dyn ViewCommand> = BasicRequestExecutor {
         request: request_to_do.clone(),
@@ -31,10 +31,10 @@ async fn should_submit_a_basic_request() -> anyhow::Result<()> {
 
 #[tokio::test]
 async fn should_submit_a_request_after_saved() -> anyhow::Result<()> {
-    use commands::save_new_request::SaveNewRequestExecutor;
-    use commands::save_request_with_base_request::SaveRequestWithBaseRequestExecutor;
-    use commands::submit_request::BasicRequestExecutor;
-    use commands::submit_saved_request::SubmitSavedRequestExecutor;
+    use handlers::save_new_request::SaveNewRequestExecutor;
+    use handlers::save_request_with_base_request::SaveRequestWithBaseRequestExecutor;
+    use handlers::submit_request::BasicRequestExecutor;
+    use handlers::submit_saved_request::SubmitSavedRequestExecutor;
 
     let first_request_to_do = RequestData::default()
         .with_url("https://google.com")

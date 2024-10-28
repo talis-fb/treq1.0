@@ -7,7 +7,7 @@ use crate::app::services::http_collections::entities::methods::METHODS;
 use crate::app::services::http_collections::entities::partial_entities::PartialRequestData;
 use crate::app::services::http_collections::entities::requests::BodyPayload;
 use crate::app::services::http_collections::entities::url::{Url, UrlInfo};
-use crate::view::input::cli_input::{CliCommandChoice, CliInput, RequestBuildingOptions};
+use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput, RequestBuildingOptions};
 
 pub fn parse_inputs_to_request_data(input: &CliInput) -> Result<PartialRequestData> {
     // Optional params like '--url', '--method' or '--raw'

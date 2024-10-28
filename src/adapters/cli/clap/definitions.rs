@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 use clap::{command, Arg, ArgAction, Command};
 
-pub fn root_command() -> Command {
+pub fn root_command_definition() -> Command {
     let mut app = command!();
 
     for method in ["GET", "POST", "PUT", "DELETE", "HEAD", "PATCH"] {
@@ -311,7 +311,7 @@ mod tests {
 
     #[test]
     fn test_basic_get_request() {
-        let root_matches = root_command()
+        let root_matches = root_command_definition()
             .try_get_matches_from(vec!["treq", "GET", "https://httpbin.org/get"])
             .unwrap();
 
@@ -333,7 +333,7 @@ mod tests {
 
     #[test]
     fn test_basic_get_request_with_request_items() {
-        let root_matches = root_command()
+        let root_matches = root_command_definition()
             .try_get_matches_from(vec![
                 "treq",
                 "GET",
@@ -357,7 +357,7 @@ mod tests {
 
     #[test]
     fn test_basic_post_request() {
-        let root_matches = root_command()
+        let root_matches = root_command_definition()
             .try_get_matches_from(vec![
                 "treq",
                 "POST",
@@ -376,7 +376,7 @@ mod tests {
 
     #[test]
     fn test_basic_defatult_request() {
-        let root_matches = root_command()
+        let root_matches = root_command_definition()
             .try_get_matches_from(vec![
                 "treq",
                 "https://httpbin.org/get",
@@ -395,7 +395,7 @@ mod tests {
 
     #[test]
     fn test_basic_default_request_with_request_items() {
-        let root_matches = root_command()
+        let root_matches = root_command_definition()
             .try_get_matches_from(vec![
                 "treq",
                 "https://httpbin.org/post",

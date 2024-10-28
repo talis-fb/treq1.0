@@ -4,7 +4,7 @@ use async_trait::async_trait;
 use serde::Serialize;
 
 use super::input::cli_input::ViewOptions;
-use crate::app::kernel::Backend;
+use crate::app::kernel::Kernel;
 use crate::app::services::http_collections::entities::partial_entities::PartialRequestData;
 use crate::app::services::http_collections::entities::requests::RequestData;
 
@@ -19,7 +19,7 @@ pub mod submit_saved_request;
 
 #[async_trait]
 pub trait ViewCommand {
-    async fn execute(self: Box<Self>, provider: &mut dyn Backend) -> anyhow::Result<()>;
+    async fn execute(self: Box<Self>, provider: &mut dyn Kernel) -> anyhow::Result<()>;
 }
 
 #[derive(Debug, PartialEq, Eq, Serialize)]

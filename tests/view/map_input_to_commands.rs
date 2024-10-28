@@ -1,13 +1,13 @@
 #![allow(non_snake_case)]
 
 use insta::assert_yaml_snapshot as assert_snapshot;
-use treq::view::commands::ViewCommandChoice;
-use treq::view::input::cli_definition::root_command;
-use treq::view::input::cli_input::CliInput;
-use treq::view::input_to_commands::map_input_to_commands;
+use treq::adapters::cli::handlers::ViewCommandChoice;
+use treq::adapters::cli::clap::definitions::root_command_definition;
+use treq::adapters::cli::input::cli_input::CliInput;
+use treq::adapters::cli::input_to_commands::map_input_to_commands;
 
 fn process<'a>(input: impl IntoIterator<Item = &'a str>) -> anyhow::Result<Vec<ViewCommandChoice>> {
-    let matches = root_command().get_matches_from(input);
+    let matches = root_command_definition().get_matches_from(input);
     let inputs = CliInput::from_clap_matches(&matches)?;
     let commands_choices = map_input_to_commands(inputs)?;
     Ok(commands_choices)

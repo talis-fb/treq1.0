@@ -8,7 +8,7 @@ use crossterm::{ExecutableCommand, QueueableCommand};
 use tokio::sync::oneshot;
 use tokio::time::Duration;
 
-use crate::view::style::StyledStr;
+use crate::adapters::cli::style::StyledStr;
 
 pub trait CliWriterRepository: Send {
     fn clear_current_line(&mut self);

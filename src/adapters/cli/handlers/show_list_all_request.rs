@@ -3,10 +3,10 @@ use std::io::stdout;
 use async_trait::async_trait;
 
 use super::ViewCommand;
-use crate::app::kernel::Backend;
-use crate::view::output::utils::{BREAK_LINE, TAB_SPACE};
-use crate::view::output::writer::{CliWriterRepository, CrosstermCliWriter};
-use crate::view::style::{Color, StyledStr};
+use crate::app::kernel::Kernel;
+use crate::adapters::cli::output::utils::{BREAK_LINE, TAB_SPACE};
+use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
+use crate::adapters::cli::style::{Color, StyledStr};
 
 pub struct ShowListAllRequestExecutor<Writer: CliWriterRepository> {
     pub writer: Writer,
@@ -28,7 +28,7 @@ impl ShowListAllRequestExecutor<CrosstermCliWriter> {
 
 #[async_trait]
 impl<Writer: CliWriterRepository> ViewCommand for ShowListAllRequestExecutor<Writer> {
-    async fn execute(mut self: Box<Self>, provider: &mut dyn Backend) -> anyhow::Result<()> {
+    async fn execute(mut self: Box<Self>, provider: &mut dyn Kernel) -> anyhow::Result<()> {
         let mut requests_names = provider.find_all_request_name().await?;
         requests_names.sort();
 

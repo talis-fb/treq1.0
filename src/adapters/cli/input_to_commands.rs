@@ -7,7 +7,7 @@ use super::input::validators::url_alias::validate_alias_url_to_localhost;
 use super::input_parsers::main_command_choices::parse_inputs_to_main_command_choices;
 use super::input_parsers::request_data::parse_inputs_to_request_data;
 use super::input_parsers::save_command_choices::parse_inputs_to_saving_command_choices;
-use crate::view::commands::ViewCommandChoice;
+use crate::adapters::cli::handlers::ViewCommandChoice;
 
 pub fn map_input_to_commands(input: CliInput) -> Result<Vec<ViewCommandChoice>> {
     let input = Ok(input)

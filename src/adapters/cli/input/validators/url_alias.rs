@@ -3,7 +3,7 @@ use std::sync::OnceLock;
 use anyhow::Result;
 use regex::Regex;
 
-use crate::view::input::cli_input::{CliCommandChoice, CliInput, RequestBuildingOptions};
+use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput, RequestBuildingOptions};
 
 pub fn validate_alias_url_to_localhost(mut input: CliInput) -> Result<CliInput> {
     let url_to_validate = match &mut input {

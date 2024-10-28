@@ -4,12 +4,12 @@ use async_trait::async_trait;
 
 use super::submit_request::BasicRequestExecutor;
 use super::ViewCommand;
-use crate::app::kernel::Backend;
+use crate::app::kernel::Kernel;
 use crate::app::services::http_collections::entities::partial_entities::PartialRequestData;
-use crate::view::input::cli_input::ViewOptions;
-use crate::view::output::utils::BREAK_LINE;
-use crate::view::output::writer::{CliWriterRepository, CrosstermCliWriter};
-use crate::view::style::{Color, StyledStr};
+use crate::adapters::cli::input::cli_input::ViewOptions;
+use crate::adapters::cli::output::utils::BREAK_LINE;
+use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
+use crate::adapters::cli::style::{Color, StyledStr};
 
 pub struct SubmitSavedRequestExecutor<W1, W2, W3>
 where
@@ -65,7 +65,7 @@ where
     W2: CliWriterRepository,
     W3: CliWriterRepository,
 {
-    async fn execute(mut self: Box<Self>, provider: &mut dyn Backend) -> anyhow::Result<()> {
+    async fn execute(mut self: Box<Self>, provider: &mut dyn Kernel) -> anyhow::Result<()> {
         let request = provider
             .get_request_saved(self.request_name.clone())
             .await?;

@@ -1,4 +1,4 @@
-use treq::app::kernel::Backend;
+use treq::app::kernel::Kernel;
 use treq::app::services::http_client::entities::Response;
 use treq::app::services::http_client::http_repository::MockHttpClientRepository;
 use treq::app::services::http_collections::entities::requests::RequestData;

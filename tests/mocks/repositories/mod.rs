@@ -6,7 +6,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use tempfile::{tempdir, TempDir};
 use tokio::sync::oneshot;
-use treq::app::kernel::{AppBackend, Backend};
+use treq::app::kernel::{AppKernel, Kernel};
 use treq::app::services::files::service::CoreFileService;
 use treq::app::services::http_client::entities::Response;
 use treq::app::services::http_client::http_repository::reqwest::ReqwestClientRepository;
@@ -14,8 +14,8 @@ use treq::app::services::http_client::service::CoreWebClient;
 use treq::app::services::http_collections::entities::requests::RequestData;
 use treq::app::services::http_collections::service::{CoreRequestService, RequestService};
 use treq::utils::uuid::UUID;
-use treq::view::output::writer::CliWriterRepository;
-use treq::view::style::StyledStr;
+use treq::adapters::cli::output::writer::CliWriterRepository;
+use treq::adapters::cli::style::StyledStr;
 
 pub fn create_mock_back_end() -> MockAppBackend {
     let temp_root = tempdir().unwrap();
@@ -33,18 +33,18 @@ pub fn create_mock_back_end() -> MockAppBackend {
     let req = CoreRequestService::init();
     let web = CoreWebClient::init(ReqwestClientRepository);
     let files = CoreFileService; //::init(config_dir, data_dir, tempfiles_dir);
-    let backend = AppBackend::init(req, web, files);
+    let backend = AppKernel::init(req, web, files);
     MockAppBackend::new(backend, temp_root)
 }
 
 pub struct MockAppBackend {
-    app_backend: AppBackend,
+    app_backend: AppKernel,
     expected_requests: Vec<RequestData>,
     _temp_dir: TempDir,
 }
 
 impl MockAppBackend {
-    pub fn new(app_backend: AppBackend, temp_dir: TempDir) -> Self {
+    pub fn new(app_backend: AppKernel, temp_dir: TempDir) -> Self {
         Self {
             app_backend,
             expected_requests: vec![],
@@ -62,7 +62,7 @@ impl MockAppBackend {
 }
 
 #[async_trait]
-impl Backend for MockAppBackend {
+impl Kernel for MockAppBackend {
     async fn submit_http_request(&mut self, id: UUID) -> Result<Response> {
         let request = self.app_backend.get_request(id).await?.unwrap();
         let expected_request = self.expected_requests.remove(0);

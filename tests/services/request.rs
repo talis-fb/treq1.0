@@ -1,4 +1,4 @@
-use treq::app::kernel::Backend;
+use treq::app::kernel::Kernel;
 use treq::app::services::http_collections::entities::methods::METHODS;
 use treq::app::services::http_collections::entities::requests::RequestData;
 

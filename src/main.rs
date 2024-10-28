@@ -1,14 +1,14 @@
 use anyhow::Error;
 use directories::ProjectDirs;
-use treq::app::kernel::AppBackend;
+use treq::app::kernel::AppKernel;
 use treq::app::services::files::service::CoreFileService;
 use treq::app::services::http_client::http_repository::reqwest::ReqwestClientRepository;
 use treq::app::services::http_client::service::CoreWebClient;
 use treq::app::services::http_collections::service::CoreRequestService;
 use treq::utils::errors::print_pretty_error;
-use treq::view::input::cli_definition::root_command;
-use treq::view::input::cli_input::CliInput;
-use treq::view::input_to_commands::map_input_to_commands;
+use treq::adapters::cli::clap::definitions::root_command_definition;
+use treq::adapters::cli::input::cli_input::CliInput;
+use treq::adapters::cli::input_to_commands::map_input_to_commands;
 
 const APP_NAME: &str = env!("CARGO_PKG_NAME");
 const APP_AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
@@ -35,7 +35,7 @@ async fn runner() -> anyhow::Result<()> {
     // ----------------------------
     // Cli Input
     // ----------------------------
-    let args = root_command().get_matches();
+    let args = root_command_definition().get_matches();
     let cli_inputs = CliInput::from_clap_matches(&args)?;
     let cli_commands = map_input_to_commands(cli_inputs)?;
     let commands_executors = cli_commands.into_iter().map(|choice| choice.get_executor());
@@ -46,7 +46,7 @@ async fn runner() -> anyhow::Result<()> {
     let req = CoreRequestService::init();
     let web = CoreWebClient::init(ReqwestClientRepository);
     let files = CoreFileService; //::init(config_dir, data_dir, tempfiles_dir);
-    let mut backend = AppBackend::init(req, web, files);
+    let mut backend = AppKernel::init(req, web, files);
 
     // ----------------------------
     //  Execute commands

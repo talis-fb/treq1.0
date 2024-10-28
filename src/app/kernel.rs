@@ -17,7 +17,7 @@ use crate::app::services::http_collections::service::RequestService;
 use crate::utils::uuid::UUID;
 
 #[async_trait]
-pub trait Backend: Send + Sync {
+pub trait Kernel: Send + Sync {
     async fn add_request(&mut self, request: RequestData) -> Result<UUID>;
     async fn edit_request(&mut self, id: UUID, request: RequestData) -> Result<()>;
     async fn delete_request(&mut self, id: UUID) -> Result<()>;
@@ -37,13 +37,13 @@ pub trait Backend: Send + Sync {
     async fn rename_request_saved(&mut self, request_name: String, new_name: String) -> Result<()>;
 }
 
-pub struct AppBackend {
+pub struct AppKernel {
     request_service: Arc<Service<dyn RequestService>>,
     web_client: Arc<Service<dyn WebClient>>,
     file_service: Arc<Service<dyn FileService>>,
 }
 
-impl AppBackend {
+impl AppKernel {
     pub fn init(
         request_service: impl RequestService + 'static,
         web_client: impl WebClient + 'static,
@@ -61,7 +61,7 @@ impl AppBackend {
 }
 
 #[async_trait]
-impl Backend for AppBackend {
+impl Kernel for AppKernel {
     async fn add_request(&mut self, request: RequestData) -> Result<UUID> {
         let resp = self
             .request_service

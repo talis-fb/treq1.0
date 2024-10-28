@@ -4,13 +4,13 @@ use async_trait::async_trait;
 use indicatif::{ProgressBar, ProgressStyle};
 
 use super::ViewCommand;
-use crate::app::kernel::Backend;
+use crate::app::kernel::Kernel;
 use crate::app::services::http_client::entities::get_status_code_message;
 use crate::app::services::http_collections::entities::requests::RequestData;
-use crate::view::input::cli_input::ViewOptions;
-use crate::view::output::utils::{BREAK_LINE, BREAK_LINE_WITH_GAP, SINGLE_SPACE, TAB_SPACE};
-use crate::view::output::writer::{CliWriterRepository, CrosstermCliWriter};
-use crate::view::style::{Color, StyledStr, TextStyle};
+use crate::adapters::cli::input::cli_input::ViewOptions;
+use crate::adapters::cli::output::utils::{BREAK_LINE, BREAK_LINE_WITH_GAP, SINGLE_SPACE, TAB_SPACE};
+use crate::adapters::cli::output::writer::{CliWriterRepository, CrosstermCliWriter};
+use crate::adapters::cli::style::{Color, StyledStr, TextStyle};
 
 pub struct BasicRequestExecutor<W1, W2, W3>
 where
@@ -58,7 +58,7 @@ where
     W2: CliWriterRepository,
     W3: CliWriterRepository,
 {
-    async fn execute(mut self: Box<Self>, provider: &mut dyn Backend) -> anyhow::Result<()> {
+    async fn execute(mut self: Box<Self>, provider: &mut dyn Kernel) -> anyhow::Result<()> {
         let url = self.request.url.to_string();
 
         let title = {

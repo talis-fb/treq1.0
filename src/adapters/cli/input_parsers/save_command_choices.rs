@@ -1,8 +1,8 @@
 use anyhow::Result;
 
 use crate::app::services::http_collections::entities::partial_entities::PartialRequestData;
-use crate::view::commands::ViewCommandChoice;
-use crate::view::input::cli_input::{CliCommandChoice, CliInput};
+use crate::adapters::cli::handlers::ViewCommandChoice;
+use crate::adapters::cli::input::cli_input::{CliCommandChoice, CliInput};
 
 pub fn parse_inputs_to_saving_command_choices(
     input: &CliInput,
