@@ -17,6 +17,7 @@ use super::commands::find_all_saved_http_collections_names::FindAllSavedHttpColl
 use super::commands::get_saved_http_collection::GetSavedHttpCollection;
 use super::commands::remove_saved_http_collection::RemoveHttpCollection;
 use super::commands::rename_saved_http_collection::RenameHttpCollection;
+use super::commands::save_http_collection::SaveHttpCollection;
 use super::services::http_client::service::WebClient;
 use super::services::service::Service;
 
@@ -113,19 +114,12 @@ impl Backend for AppBackend {
 
     async fn save_request_datas_as(
         &mut self,
-        name: String,
-        request_data: RequestData,
+        collection_name: String,
+        collection_data: RequestData,
     ) -> Result<()> {
-        let path = self
-            .file_service
-            .write()
-            .await
-            .as_mut()
-            .get_or_create_file(name.into())?;
-
-        let request_data = serde_json::to_string(&request_data)?;
-        file_utils::write_to_file(path, &request_data).await?;
-        Ok(())
+        SaveHttpCollection {
+            file_service: self.file_service.clone(),
+        }.execute(collection_name, collection_data).await
     }
 
     async fn get_request_saved(&mut self, collection_name: String) -> Result<RequestData> {
