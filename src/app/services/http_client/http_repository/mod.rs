@@ -3,12 +3,9 @@ pub mod reqwest;
 use mockall::automock;
 use mockall::predicate::*;
 use tokio::sync::oneshot::Receiver;
-use tokio::task::JoinHandle as TokioTask;
 
 use super::entities::Response;
 use crate::app::services::http_collections::entities::requests::RequestData;
-
-// pub type TaskRunningRequest = TokioTask<anyhow::Result<Response>>;
 
 // -------------------------------------------------------------------------------------------------------------------
 // TODO: Make this 'automock' enabled only in test mode

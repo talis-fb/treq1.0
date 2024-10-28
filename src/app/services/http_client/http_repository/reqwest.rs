@@ -15,6 +15,7 @@ pub struct ReqwestClientRepository;
 
 impl HttpClientRepository for ReqwestClientRepository {
     fn submit_request(&self, request: RequestData) -> Receiver<anyhow::Result<Response>> {
+        let (tx,rx) = tokio::sync::oneshot::channel();
         tokio::task::spawn(async move {
             let url = request.url.to_string();
             let headers = request.headers;
@@ -39,12 +40,21 @@ impl HttpClientRepository for ReqwestClientRepository {
 
             let now = tokio::time::Instant::now();
 
-            let response = client.send().await?;
+            let response = client.send().await;
 
             let response_time_ms = now.elapsed().as_millis() as u64;
 
-            ReqwestClientRepository::convert_to_app_response(response, response_time_ms).await
-        })
+            match response {
+                Ok(response) => {
+                    let final_response = ReqwestClientRepository::convert_to_app_response(response, response_time_ms).await;
+                    tx.send(final_response);
+                }
+                Err(err) => {
+                    tx.send(Err(err.into()));
+                }
+            }
+        });
+        rx
     }
 }
 

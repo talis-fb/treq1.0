@@ -1,28 +1,29 @@
+use tokio::sync::oneshot::Receiver;
 use tokio::task::JoinHandle;
 
 use super::entities::Response;
-use super::http_repository::{HttpClientRepository, TaskRunningRequest};
+use super::http_repository::{HttpClientRepository};
 use crate::app::services::http_collections::entities::requests::RequestData;
 use crate::app::services::http_collections::entities::url::Url;
 
 pub trait WebClient: Send + Sync {
-    fn submit_request(&mut self, request: RequestData) -> JoinHandle<anyhow::Result<Response>>;
+    fn submit_request(&mut self, request: RequestData) -> Receiver<anyhow::Result<Response>>;
 }
 
-pub struct CoreWebClient {
-    pub http_client: Box<dyn HttpClientRepository>,
+pub struct CoreWebClient<R> where R : HttpClientRepository {
+    pub http_client: R,
 }
 
-impl CoreWebClient {
-    pub fn init(repository: impl HttpClientRepository + 'static) -> Self {
+impl<R> CoreWebClient<R> where R : HttpClientRepository {
+    pub fn init(repository: R) -> Self {
         Self {
-            http_client: Box::new(repository),
+            http_client: repository,
         }
     }
 }
 
-impl WebClient for CoreWebClient {
-    fn submit_request(&mut self, mut request: RequestData) -> TaskRunningRequest {
+impl<R> WebClient for CoreWebClient<R> where R : HttpClientRepository + Send + Sync {
+    fn submit_request(&mut self, mut request: RequestData) -> Receiver<anyhow::Result<Response>> {
         if let Url::ValidatedUrl(url) = &mut request.url {
             url.protocol.get_or_insert("http".to_string());
         }

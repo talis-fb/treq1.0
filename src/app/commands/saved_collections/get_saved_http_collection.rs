@@ -1,26 +1,29 @@
+use std::sync::Arc;
+
 use anyhow::Error;
 
-use crate::app::commands::{AsyncCommand, Command};
 use crate::app::configurations::collections::HTTP_COLLECTIONS_FOLDER;
 use crate::app::services::files::service::FileService;
 use crate::app::services::http_collections::entities::requests::RequestData;
+use crate::app::services::service::Service;
 use crate::utils::files;
 
-pub struct GetSavedHttpCollection<'a> {
-    pub file_service: &'a mut dyn FileService,
+pub struct GetSavedHttpCollection {
+    pub file_service: Arc<Service<dyn FileService>>,
 }
 
-impl<'a> AsyncCommand for GetSavedHttpCollection<'a> {
-    type Input = &'a str;
-    type Output = anyhow::Result<RequestData>;
-
-    async fn execute(self, collection_name: Self::Input) -> Self::Output {
+impl GetSavedHttpCollection {
+    pub async fn execute(self, collection_name: String) -> anyhow::Result<RequestData> {
         let path = format!("{HTTP_COLLECTIONS_FOLDER}/{collection_name}");
-        let file_buf = self.file_service.get_or_create_data_file(path)?;
+
+        let mut file_service = self.file_service.write().await;
+        let file_service_ref = file_service.as_mut();
+
+        let file_buf = file_service_ref.get_or_create_file(path.into())?;
         let file_content = files::read_from_file(&file_buf).await?;
 
         if file_content.is_empty() {
-            self.file_service.remove_file(file_buf)?;
+            file_service_ref.remove_file(file_buf)?;
             return Err(Error::msg("This request does not exist"));
         }
 

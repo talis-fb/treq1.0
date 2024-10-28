@@ -67,7 +67,7 @@ impl Backend for MockAppBackend {
         panic!("Not implemented");
     }
 
-    async fn submit_request_async(
+    async fn submit_http_request(
         &mut self,
         id: UUID,
     ) -> Result<oneshot::Receiver<Result<Response>>> {

@@ -1,4 +1,4 @@
-use std::borrow::BorrowMut;
+use std::borrow::{Borrow, BorrowMut};
 use std::future::Future;
 use std::sync::Arc;
 
@@ -8,11 +8,17 @@ use tokio::sync::{oneshot, Mutex, RwLock, RwLockWriteGuard};
 
 use crate::app::services::files::service::{CoreFileService, FileService};
 use crate::app::services::http_client::entities::Response;
-use crate::app::services::http_client::service::{CoreWebClient, WebClient};
 use crate::app::services::http_collections::entities::requests::RequestData;
 use crate::app::services::http_collections::service::{CoreRequestService, RequestService};
 use crate::utils::files as file_utils;
 use crate::utils::uuid::UUID;
+
+use super::commands::find_all_saved_http_collections_names::FindAllSavedHttpCollectionNames;
+use super::commands::get_saved_http_collection::GetSavedHttpCollection;
+use super::commands::remove_saved_http_collection::RemoveHttpCollection;
+use super::commands::rename_saved_http_collection::RenameHttpCollection;
+use super::services::http_client::service::WebClient;
+use super::services::service::Service;
 
 #[async_trait]
 pub trait Backend: Send + Sync {
@@ -22,10 +28,10 @@ pub trait Backend: Send + Sync {
     async fn get_request(&mut self, id: UUID) -> Result<Option<Arc<RequestData>>>;
     async fn undo_request(&mut self, id: UUID) -> Result<()>;
     async fn redo_request(&mut self, id: UUID) -> Result<()>;
-    async fn submit_request_async(
+    async fn submit_http_request(
         &mut self,
         id: UUID,
-    ) -> Result<oneshot::Receiver<Result<Response>>>;
+    ) -> Result<Response>;
 
     async fn save_request_datas_as(
         &mut self,
@@ -39,9 +45,9 @@ pub trait Backend: Send + Sync {
 }
 
 pub struct AppBackend {
-    request_service: Arc<RwLock<Box<dyn RequestService>>>,
-    web_client: Arc<RwLock<Box<dyn WebClient>>>,
-    file_service: Arc<RwLock<Box<dyn FileService>>>,
+    request_service: Arc<Service<dyn RequestService>>,
+    web_client: Arc<Service<dyn WebClient>>,
+    file_service: Arc<Service<dyn FileService>>,
 }
 
 impl AppBackend {
@@ -50,11 +56,9 @@ impl AppBackend {
         web_client: impl WebClient + 'static,
         file_service: impl FileService + 'static,
     ) -> Self {
-        let request_service = Arc::new(RwLock::new(
-            Box::new(request_service) as Box<dyn RequestService>
-        ));
-        let web_client = Arc::new(RwLock::new(Box::new(web_client) as Box<dyn WebClient>));
-        let file_service = Arc::new(RwLock::new(Box::new(file_service) as Box<dyn FileService>));
+        let request_service = Arc::new(Service::from(request_service));
+        let web_client = Arc::new(Service::from(web_client));
+        let file_service = Arc::new(Service::from(file_service));
         Self {
             request_service,
             web_client,
@@ -66,43 +70,31 @@ impl AppBackend {
 #[async_trait]
 impl Backend for AppBackend {
     async fn add_request(&mut self, request: RequestData) -> Result<UUID> {
-        let resp = self.request_service.write().await.add_request(request);
+        let resp = self.request_service.write().await.as_mut().add_request(request);
         Ok(resp)
     }
     async fn edit_request(&mut self, id: UUID, request: RequestData) -> Result<()> {
-        self.request_service.write().await.edit_request(id, request);
+        self.request_service.write().await.as_mut().edit_request(id, request);
         Ok(())
     }
     async fn get_request(&mut self, id: UUID) -> Result<Option<Arc<RequestData>>> {
-        let request = self.request_service.write().await.get_request_data(id);
+        let request = self.request_service.write().await.as_mut().get_request_data(id);
         Ok(request)
     }
     async fn delete_request(&mut self, id: UUID) -> Result<()> {
-        self.request_service.write().await.delete_request(id);
+        self.request_service.write().await.as_mut().delete_request(id);
         Ok(())
     }
     async fn undo_request(&mut self, id: UUID) -> Result<()> {
-        self.request_service.write().await.undo_request_data(id);
+        self.request_service.write().await.as_mut().undo_request_data(id);
         Ok(())
     }
     async fn redo_request(&mut self, id: UUID) -> Result<()> {
-        self.request_service.write().await.redo_request_data(id);
+        self.request_service.write().await.as_mut().redo_request_data(id);
         Ok(())
     }
 
-    async fn submit_request_async(&mut self, id: UUID) -> Result<Response> {
-        // let request_data = self
-        //     .get_request(id)
-        //     .await?
-        //     .ok_or(Error::msg("Not found request to given ID"))?;
-
-        // let resp = run_command_waiting_response(
-        //     &self.web_client,
-        //     WebClientCommandsFactory::submit((*request_data).clone()),
-        // )
-        // .await?;
-        // Ok(resp.unwrap())
-
+    async fn submit_http_request(&mut self, id: UUID) -> Result<Response> {
         let request_data = self
             .get_request(id)
             .await?
@@ -112,9 +104,11 @@ impl Backend for AppBackend {
             .web_client
             .write()
             .await
+            .as_mut()
             .submit_request((*request_data).clone())
-            .await?;
-        resp
+            .await??;
+
+        Ok(resp)
     }
 
     async fn save_request_datas_as(
@@ -126,94 +120,35 @@ impl Backend for AppBackend {
             .file_service
             .write()
             .await
-            .get_or_create_data_file(name)
-            .await?;
+            .as_mut()
+            .get_or_create_file(name.into())?;
 
         let request_data = serde_json::to_string(&request_data)?;
         file_utils::write_to_file(path, &request_data).await?;
         Ok(())
     }
 
-    async fn get_request_saved(&mut self, name: String) -> Result<RequestData> {
-        let path = run_command_waiting_response(
-            &self.file_service,
-            FileServiceCommandsFactory::get_or_create_file_of_saved_request(name),
-        )
-        .await??;
-
-        let request_data = file_utils::read_from_file(path.clone()).await?;
-        if request_data.is_empty() {
-            run_commands(
-                &self.file_service,
-                [FileServiceCommandsFactory::remove_file(path)],
-            )
-            .await?;
-            return Err(Error::msg("This request does not exist"));
-        }
-
-        let request_data: RequestData = serde_json::from_str(&request_data)?;
-        Ok(request_data)
+    async fn get_request_saved(&mut self, collection_name: String) -> Result<RequestData> {
+        GetSavedHttpCollection {
+            file_service: self.file_service.clone(),
+        }.execute(collection_name).await
     }
 
     async fn find_all_request_name(&mut self) -> Result<Vec<String>> {
-        let response = run_command_waiting_response(
-            &self.file_service,
-            FileServiceCommandsFactory::find_all_files_of_saved_requests(),
-        )
-        .await??;
-        let file_names = response
-            .into_iter()
-            .map(|path| path.file_name().unwrap().to_str().unwrap().to_string())
-            .collect();
-        Ok(file_names)
+        FindAllSavedHttpCollectionNames {
+            file_service: self.file_service.clone(),
+        }.execute().await
     }
 
     async fn remove_request_saved(&mut self, name: String) -> Result<()> {
-        run_command_waiting_response(
-            &self.file_service,
-            FileServiceCommandsFactory::remove_file_saved_request(name),
-        )
-        .await?
+        RemoveHttpCollection {
+            file_service: self.file_service.clone(),
+        }.execute(name).await
     }
 
-    async fn rename_request_saved(&mut self, request_name: String, new_name: String) -> Result<()> {
-        run_command_waiting_response(
-            &self.file_service,
-            FileServiceCommandsFactory::rename_file_saved_request(request_name, new_name),
-        )
-        .await?
+    async fn rename_request_saved(&mut self, collection_name: String, new_name: String) -> Result<()> {
+        RenameHttpCollection {
+            file_service: self.file_service.clone(),
+        }.execute(collection_name, new_name).await
     }
 }
-
-// async fn run_commands<Service, Resp>(
-//     service: &ServiceRunner<Service>,
-//     commands: impl IntoIterator<Item = Command<Service, Resp>>,
-// ) -> Result<()>
-// where
-//     Service: Send + 'static,
-// {
-//     for Command { command_fn, .. } in commands {
-//         service.command_channel.send(command_fn).await?;
-//     }
-//     Ok(())
-// }
-
-// async fn run_command_waiting_response<Service, Resp>(
-//     service: &ServiceRunner<Service>,
-//     command: Command<Service, Resp>,
-// ) -> Result<Resp>
-// where
-//     Service: Send + 'static,
-// {
-//     let Command {
-//         command_fn,
-//         response,
-//     } = command;
-
-//     service.command_channel.send(command_fn).await?;
-
-//     match response {
-//         Some(response_listener) => Ok(response_listener.await?),
-//         None => Err(Error::msg("No response listener")),
-//     }
-// }

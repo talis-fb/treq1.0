@@ -97,11 +97,11 @@ where
         self.writer_metadata.print_lines([BREAK_LINE]);
 
         let request_id = provider.add_request(self.request).await?;
-        let response_submit = provider.submit_request_async(request_id).await?;
-        let (response_submit, mut listener_submit) = chain_listener_to_receiver(response_submit);
+
+        let (tx_response_done, mut rx_response_done) = tokio::sync::oneshot::channel::<()>();
 
         // Loading spinner
-        {
+        tokio::spawn(async move {
             let now = tokio::time::Instant::now();
 
             let pb = ProgressBar::new(100);
@@ -110,7 +110,7 @@ where
 
             let mut intv = tokio::time::interval(std::time::Duration::from_millis(14));
             loop {
-                if listener_submit.try_recv().is_ok() {
+                if rx_response_done.try_recv().is_ok() {
                     break;
                 }
                 intv.tick().await;
@@ -120,9 +120,10 @@ where
                 pb.set_message("Loading...\t\t".to_owned() + elapsed.as_str());
             }
             pb.finish_and_clear();
-        }
+        });
 
-        let response_to_show = response_submit.await?;
+        let response_to_show = provider.submit_http_request(request_id).await;
+        tx_response_done.send(()).unwrap();
 
         if let Err(err_message) = response_to_show {
             self.writer_stderr.print_lines_styled([[
