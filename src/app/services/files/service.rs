@@ -1,4 +1,5 @@
-use std::{fs::OpenOptions, path::PathBuf};
+use std::fs::OpenOptions;
+use std::path::PathBuf;
 
 use anyhow::Result;
 
@@ -45,12 +46,12 @@ impl FileService for CoreFileService {
         }
 
         let file = OpenOptions::new()
-            .write(true) 
+            .write(true)
             .create(true)
             .truncate(true)
             .open(&path)?;
 
-        file.sync_all()?; 
+        file.sync_all()?;
 
         Ok(path.clone())
     }

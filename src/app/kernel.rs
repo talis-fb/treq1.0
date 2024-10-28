@@ -6,13 +6,6 @@ use anyhow::{Error, Result};
 use async_trait::async_trait;
 use tokio::sync::{oneshot, Mutex, RwLock, RwLockWriteGuard};
 
-use crate::app::services::files::service::{CoreFileService, FileService};
-use crate::app::services::http_client::entities::Response;
-use crate::app::services::http_collections::entities::requests::RequestData;
-use crate::app::services::http_collections::service::{CoreRequestService, RequestService};
-use crate::utils::files as file_utils;
-use crate::utils::uuid::UUID;
-
 use super::commands::find_all_saved_http_collections_names::FindAllSavedHttpCollectionNames;
 use super::commands::get_saved_http_collection::GetSavedHttpCollection;
 use super::commands::remove_saved_http_collection::RemoveHttpCollection;
@@ -20,6 +13,12 @@ use super::commands::rename_saved_http_collection::RenameHttpCollection;
 use super::commands::save_http_collection::SaveHttpCollection;
 use super::services::http_client::service::WebClient;
 use super::services::service::Service;
+use crate::app::services::files::service::{CoreFileService, FileService};
+use crate::app::services::http_client::entities::Response;
+use crate::app::services::http_collections::entities::requests::RequestData;
+use crate::app::services::http_collections::service::{CoreRequestService, RequestService};
+use crate::utils::files as file_utils;
+use crate::utils::uuid::UUID;
 
 #[async_trait]
 pub trait Backend: Send + Sync {
@@ -29,10 +28,7 @@ pub trait Backend: Send + Sync {
     async fn get_request(&mut self, id: UUID) -> Result<Option<Arc<RequestData>>>;
     async fn undo_request(&mut self, id: UUID) -> Result<()>;
     async fn redo_request(&mut self, id: UUID) -> Result<()>;
-    async fn submit_http_request(
-        &mut self,
-        id: UUID,
-    ) -> Result<Response>;
+    async fn submit_http_request(&mut self, id: UUID) -> Result<Response>;
 
     async fn save_request_datas_as(
         &mut self,
@@ -71,27 +67,53 @@ impl AppBackend {
 #[async_trait]
 impl Backend for AppBackend {
     async fn add_request(&mut self, request: RequestData) -> Result<UUID> {
-        let resp = self.request_service.write().await.as_mut().add_request(request);
+        let resp = self
+            .request_service
+            .write()
+            .await
+            .as_mut()
+            .add_request(request);
         Ok(resp)
     }
     async fn edit_request(&mut self, id: UUID, request: RequestData) -> Result<()> {
-        self.request_service.write().await.as_mut().edit_request(id, request);
+        self.request_service
+            .write()
+            .await
+            .as_mut()
+            .edit_request(id, request);
         Ok(())
     }
     async fn get_request(&mut self, id: UUID) -> Result<Option<Arc<RequestData>>> {
-        let request = self.request_service.write().await.as_mut().get_request_data(id);
+        let request = self
+            .request_service
+            .write()
+            .await
+            .as_mut()
+            .get_request_data(id);
         Ok(request)
     }
     async fn delete_request(&mut self, id: UUID) -> Result<()> {
-        self.request_service.write().await.as_mut().delete_request(id);
+        self.request_service
+            .write()
+            .await
+            .as_mut()
+            .delete_request(id);
         Ok(())
     }
     async fn undo_request(&mut self, id: UUID) -> Result<()> {
-        self.request_service.write().await.as_mut().undo_request_data(id);
+        self.request_service
+            .write()
+            .await
+            .as_mut()
+            .undo_request_data(id);
         Ok(())
     }
     async fn redo_request(&mut self, id: UUID) -> Result<()> {
-        self.request_service.write().await.as_mut().redo_request_data(id);
+        self.request_service
+            .write()
+            .await
+            .as_mut()
+            .redo_request_data(id);
         Ok(())
     }
 
@@ -119,30 +141,44 @@ impl Backend for AppBackend {
     ) -> Result<()> {
         SaveHttpCollection {
             file_service: self.file_service.clone(),
-        }.execute(collection_name, collection_data).await
+        }
+        .execute(collection_name, collection_data)
+        .await
     }
 
     async fn get_request_saved(&mut self, collection_name: String) -> Result<RequestData> {
         GetSavedHttpCollection {
             file_service: self.file_service.clone(),
-        }.execute(collection_name).await
+        }
+        .execute(collection_name)
+        .await
     }
 
     async fn find_all_request_name(&mut self) -> Result<Vec<String>> {
         FindAllSavedHttpCollectionNames {
             file_service: self.file_service.clone(),
-        }.execute().await
+        }
+        .execute()
+        .await
     }
 
     async fn remove_request_saved(&mut self, name: String) -> Result<()> {
         RemoveHttpCollection {
             file_service: self.file_service.clone(),
-        }.execute(name).await
+        }
+        .execute(name)
+        .await
     }
 
-    async fn rename_request_saved(&mut self, collection_name: String, new_name: String) -> Result<()> {
+    async fn rename_request_saved(
+        &mut self,
+        collection_name: String,
+        new_name: String,
+    ) -> Result<()> {
         RenameHttpCollection {
             file_service: self.file_service.clone(),
-        }.execute(collection_name, new_name).await
+        }
+        .execute(collection_name, new_name)
+        .await
     }
 }

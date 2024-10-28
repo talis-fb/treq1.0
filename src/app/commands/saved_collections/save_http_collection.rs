@@ -1,4 +1,3 @@
-
 use std::sync::Arc;
 
 use anyhow::Error;
@@ -14,7 +13,11 @@ pub struct SaveHttpCollection {
 }
 
 impl SaveHttpCollection {
-    pub async fn execute(self, collection_name: String, collection_data: RequestData) -> anyhow::Result<()> {
+    pub async fn execute(
+        self,
+        collection_name: String,
+        collection_data: RequestData,
+    ) -> anyhow::Result<()> {
         let path = USER_COLLECTIONS_FOLDER.clone().join(collection_name);
 
         let mut file_service = self.file_service.write().await;

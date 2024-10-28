@@ -2,8 +2,10 @@ use std::borrow::{Borrow, BorrowMut};
 
 use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-
-pub struct Service<T> where T: ?Sized {
+pub struct Service<T>
+where
+    T: ?Sized,
+{
     service: RwLock<T>,
 }
 
@@ -20,24 +22,39 @@ impl<T> From<T> for Service<T> {
     }
 }
 
-impl<T> Service<T> where T: ?Sized {
+impl<T> Service<T>
+where
+    T: ?Sized,
+{
     pub async fn read(&self) -> ServiceLockReadGuard<T> {
         let read_guard = self.service.read().await;
-        ServiceLockReadGuard { service: self, lock_guard: read_guard }
+        ServiceLockReadGuard {
+            service: self,
+            lock_guard: read_guard,
+        }
     }
     pub async fn write(&self) -> ServiceLockWriteGuard<T> {
         let write_guard = self.service.write().await;
-        ServiceLockWriteGuard { service: self, lock_guard: write_guard }
+        ServiceLockWriteGuard {
+            service: self,
+            lock_guard: write_guard,
+        }
     }
 }
 
 // Read Guard
-pub struct ServiceLockReadGuard<'a, T> where T: ?Sized {
+pub struct ServiceLockReadGuard<'a, T>
+where
+    T: ?Sized,
+{
     service: &'a Service<T>,
     lock_guard: RwLockReadGuard<'a, T>,
 }
 
-impl<'a, T> ServiceLockReadGuard<'a, T> where T: ?Sized {
+impl<'a, T> ServiceLockReadGuard<'a, T>
+where
+    T: ?Sized,
+{
     pub fn as_ref(&self) -> &T {
         let lock_guard = self.lock_guard.borrow();
         &*lock_guard
@@ -45,12 +62,18 @@ impl<'a, T> ServiceLockReadGuard<'a, T> where T: ?Sized {
 }
 
 // Write Guard
-pub struct ServiceLockWriteGuard<'a, T> where T: ?Sized {
+pub struct ServiceLockWriteGuard<'a, T>
+where
+    T: ?Sized,
+{
     service: &'a Service<T>,
     lock_guard: RwLockWriteGuard<'a, T>,
 }
 
-impl<'a, T> ServiceLockWriteGuard<'a, T> where T: ?Sized {
+impl<'a, T> ServiceLockWriteGuard<'a, T>
+where
+    T: ?Sized,
+{
     pub fn as_ref(&self) -> &T {
         let lock_guard = self.lock_guard.borrow();
         &*lock_guard
